@@ -1,6 +1,8 @@
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import { authenticateUser } from ''; 
+import { connect } from 'react-redux';
+import { saveUser } from "./redux/actions/auth.actions";
 import Home from "./components/Home";
 import Characters from "./components/Characters";
 import Movies from "./components/Movies";
@@ -10,13 +12,14 @@ import Login from "./components/Login";
 import PrivateRoute from "./components/PrivateRoute";
 import "./App.scss";
 
-const App = () => {
+
+const App = ({user, dispatch}) => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  
 
   const loginUser = user => {
     const userLogged = authenticateUser(user);
-    setUser(userLogged);
+    dispatch(saveUser(userLogged));
 
     if(userLogged) navigate('/');
   }
@@ -39,7 +42,7 @@ const App = () => {
       {!user && <Link to='/login'>
         <button>Login</button>
       </Link>}
-      {user && <button onClick={() => setUser(false)}>Logout</button>}
+      {user && <button onClick={() => dispatch(saveUser(false))}>Logout</button>}
 
       <Routes>
         <Route path="/" element={<Home />} />
@@ -53,4 +56,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default connect(state => ({user: state.auth.user}))(App);

@@ -1,11 +1,14 @@
 import { useState } from 'react';
+import{ connect } from 'react-redux';
+import { saveUser } from '../redux/actions/auth.actions';
 
-const Login = (prop) => {
+const Login = (props) => {
     const [form, setForm] = useState({email: '', password: ''});
 
     const submitLogin = ev => {
         ev.preventDefault();
-        prop.loginUser(form);
+        props.loginUser(form);
+        props.dispatch(saveUser(form));
     }
 
     const handleInput = ev => setForm({...form, [ev.target.name]: ev.target.value})
@@ -30,4 +33,4 @@ const Login = (prop) => {
     )
 }
 
-export default Login; 
+export default connect()(Login); 
